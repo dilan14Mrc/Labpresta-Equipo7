@@ -11,6 +11,6 @@ package com.labpresta;
 public class Labpresta {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        javax.swing.SwingUtilities.invokeLater(() -> new com.labpresta.vista.VistaMenuPrincipal().setVisible(true));
     }
 }
