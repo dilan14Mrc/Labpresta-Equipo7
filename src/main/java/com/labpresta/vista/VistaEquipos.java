@@ -52,4 +52,34 @@ public class VistaEquipos extends JFrame {
         add(panelFormulario, BorderLayout.NORTH);
         add(new JScrollPane(tablaEquipos), BorderLayout.CENTER);
     }
+
+    public String getCodigo() {
+        return txtCodigo.getText().trim();
+    }
+
+    public TipoEquipo getTipoSeleccionado() {
+        return (TipoEquipo) cmbTipo.getSelectedItem();
+    }
+
+    public String getDescripcion() {
+        return txtDescripcion.getText().trim();
+    }
+
+    public JButton getBtnRegistrar() {
+        return btnRegistrar;
+    }
+
+    public void agregarFila(String codigo, TipoEquipo tipo, String descripcion, String estado) {
+        modeloTabla.addRow(new Object[]{codigo, tipo, descripcion, estado});
+    }
+
+    public void limpiarCampos() {
+        txtCodigo.setText("");
+        txtDescripcion.setText("");
+        cmbTipo.setSelectedIndex(0);
+    }
+
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
 }
