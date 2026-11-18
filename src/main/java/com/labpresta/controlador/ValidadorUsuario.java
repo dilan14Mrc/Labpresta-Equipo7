@@ -26,7 +26,8 @@ public class ValidadorUsuario {
             throw new IllegalArgumentException("El teléfono es obligatorio.");
         }
 
-        if (repositorio.buscar(cedula) != null) {
+        // Verificar cédula repetida eliminando los espacios al inicio y al final
+        if (repositorio.buscar(cedula.trim()) != null) {
             throw new IllegalArgumentException("Ya existe un usuario con esa cédula.");
         }
 
