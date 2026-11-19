@@ -4,7 +4,14 @@ import com.labpresta.modelo.Equipo;
 import com.labpresta.modelo.TipoEquipo;
 import com.labpresta.modelo.Disponible;
 import com.labpresta.modelo.EstadoEquipo;
-import java.io.*;
+import com.labpresta.modelo.EnMantenimiento;
+import com.labpresta.modelo.Prestado;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +22,7 @@ public class RepositorioEquipoCSV implements Repositorio<Equipo> {
 
     public RepositorioEquipoCSV() {
         this.listaEquipos = new ArrayList<>();
-        cargarDesdeCSV(); // TAREA C1.7
+        cargarDesdeCSV(); 
     }
 
     @Override
@@ -40,63 +47,57 @@ public class RepositorioEquipoCSV implements Repositorio<Equipo> {
         return null;
     }
 
-    // --- LECTURA DEL CSV (TAREA C1.7) ---
     private void cargarDesdeCSV() {
         File archivo = new File(rutaArchivo);
-       
-        // Si no existe, lo creamos con su encabezado
+        
         if (!archivo.exists()) {
             try (PrintWriter pw = new PrintWriter(new FileWriter(archivo))) {
                 pw.println("codigo,tipo,descripcion,estado");
-                System.out.println("Archivo equipos.csv no existía. Creado con éxito.");
             } catch (IOException e) {
                 System.err.println("Error al crear el archivo: " + e.getMessage());
             }
             return; 
         }
 
-        // Si existe, lo leemos
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-            String linea = br.readLine(); // Saltar encabezado
+            String linea = br.readLine(); 
             
             while ((linea = br.readLine()) != null) {
                 if (linea.trim().isEmpty()) continue;
                 
-                String[] partes = linea.split(",");
-                if (partes.length >= 4) {
-                    String codigo = partes[0].trim();
-                    TipoEquipo tipo = TipoEquipo.valueOf(partes[1].trim());
-                    String descripcion = partes[2].trim();
+                int c1 = linea.indexOf(',');
+                int c2 = linea.indexOf(',', c1 + 1);
+                int c3 = linea.lastIndexOf(',');
+
+                if (c1 > 0 && c2 > c1 && c3 > c2) {
+                    String codigo = linea.substring(0, c1).trim();
+                    TipoEquipo tipo = TipoEquipo.valueOf(linea.substring(c1 + 1, c2).trim().toUpperCase());
+                    String descripcion = linea.substring(c2 + 1, c3).trim();
+                    String nombreEstado = linea.substring(c3 + 1).trim();
                     
-                    // Leemos el estado del CSV usando el patrón de Justin
-                    String nombreEstado = partes[3].trim();
                     EstadoEquipo estado;
                     if (nombreEstado.equalsIgnoreCase("Prestado")) {
-                        estado = new com.labpresta.modelo.Prestado();
+                        estado = new Prestado();
                     } else if (nombreEstado.equalsIgnoreCase("En mantenimiento")) {
-                        estado = new com.labpresta.modelo.EnMantenimiento();
+                        estado = new EnMantenimiento();
                     } else {
-                        estado = new Disponible(); // Por defecto
+                        estado = new Disponible(); 
                     }
                     
-                    // Usamos el constructor de 4 parámetros de Katherin
                     Equipo eq = new Equipo(codigo, tipo, descripcion, estado); 
                     listaEquipos.add(eq);
                 }
             }
-            System.out.println("Equipos cargados desde CSV: " + listaEquipos.size());
             
         } catch (Exception e) {
             System.err.println("Error al leer el CSV: " + e.getMessage());
         }
     }
 
-    // --- GUARDADO EN CSV (PARA LA SIGUIENTE TAREA C1.9) ---
     private void guardarEnCSV() {
         try (PrintWriter pw = new PrintWriter(new FileWriter(rutaArchivo))) {
             pw.println("codigo,tipo,descripcion,estado");
             for (Equipo e : listaEquipos) {
-                // Método getNombre() que hizo Justin para el State
                 pw.println(e.getCodigo() + "," + e.getTipo() + "," + 
                            e.getDescripcion() + "," + e.getEstado().getNombre());
             }
