@@ -114,7 +114,7 @@ public class VistaUsuarios extends JFrame {
         cbTipo.setSelectedIndex(0);
         txtTelefono.setText("");
         txtBusqueda.setText("");
-        modeloTabla.setRowCount(0); 
+        //Se eliminó modeloTabla.setRowCount(0); evitando que se borre la lista de usuarios
     }
 
     public void mostrarMensaje(String mensaje) {
