@@ -1,3 +1,4 @@
+
 package com.labpresta.vista;
 
 import com.labpresta.modelo.TipoEquipo;
@@ -12,6 +13,7 @@ public class VistaEquipos extends JFrame {
     private JTextField txtDescripcion;
     private JComboBox<TipoEquipo> cmbTipo;
     private JButton btnRegistrar;
+    private JButton btnCambiarEstado;
     private JTable tablaEquipos;
     private DefaultTableModel modeloTabla;
 
@@ -23,7 +25,8 @@ public class VistaEquipos extends JFrame {
         setLocationRelativeTo(null);
 
         // Panel del formulario
-        JPanel panelFormulario = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel panelFormulario = new JPanel(
+                new GridLayout(5, 2, 10, 10));
 
         panelFormulario.add(new JLabel("Código:"));
         txtCodigo = new JTextField();
@@ -41,9 +44,14 @@ public class VistaEquipos extends JFrame {
         panelFormulario.add(new JLabel());
         panelFormulario.add(btnRegistrar);
 
+        // Botón para cambiar el estado del equipo
+        btnCambiarEstado = new JButton("Cambiar estado");
+        panelFormulario.add(new JLabel());
+        panelFormulario.add(btnCambiarEstado);
+
         // Tabla de equipos
         modeloTabla = new DefaultTableModel(
-            new String[]{"Código", "Tipo", "Descripción", "Estado"}, 0
+                new String[]{"Código", "Tipo", "Descripción", "Estado"}, 0
         );
 
         tablaEquipos = new JTable(modeloTabla);
@@ -69,8 +77,50 @@ public class VistaEquipos extends JFrame {
         return btnRegistrar;
     }
 
-    public void agregarFila(String codigo, TipoEquipo tipo, String descripcion, String estado) {
-        modeloTabla.addRow(new Object[]{codigo, tipo, descripcion, estado});
+    public JButton getBtnCambiarEstado() {
+        return btnCambiarEstado;
+    }
+
+    // Obtener el código del equipo seleccionado
+    public String getCodigoEquipoSeleccionado() {
+
+        int fila = tablaEquipos.getSelectedRow();
+
+        if (fila == -1) {
+            return null;
+        }
+
+        int filaModelo = tablaEquipos.convertRowIndexToModel(fila);
+
+        return modeloTabla.getValueAt(filaModelo, 0).toString();
+    }
+
+    // Actualizar el estado en la tabla
+    public void actualizarEstadoEquipo(
+            String codigo, String nuevoEstado) {
+
+        for (int i = 0; i < modeloTabla.getRowCount(); i++) {
+
+            String codigoFila =
+                    modeloTabla.getValueAt(i, 0).toString();
+
+            if (codigoFila.equalsIgnoreCase(codigo)) {
+
+                modeloTabla.setValueAt(nuevoEstado, i, 3);
+                return;
+            }
+        }
+    }
+
+    public void agregarFila(
+            String codigo,
+            TipoEquipo tipo,
+            String descripcion,
+            String estado) {
+
+        modeloTabla.addRow(
+                new Object[]{codigo, tipo, descripcion, estado}
+        );
     }
 
     public void limpiarCampos() {
