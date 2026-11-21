@@ -40,22 +40,25 @@ public class RepositorioPrestamoCSV implements Repositorio<Prestamo> {
     public List<Prestamo> listar() {
         return new ArrayList<>(listaPrestamos);
     }
-
+    
     @Override
     public Prestamo buscar(String codigoEquipo) {
         for (Prestamo prestamo : listaPrestamos) {
             if (prestamo.getEquipo().getCodigo()
-                    .equalsIgnoreCase(codigoEquipo)) {
-                return prestamo;
-            }
+                .equalsIgnoreCase(codigoEquipo)) {
+            return prestamo;
         }
-        return null;
     }
-
+    return null;
+}
     @Override
     public void guardar(Prestamo prestamo) {
-        throw new UnsupportedOperationException(
-                "El guardado se implementará en la tarea C3.5.");
+        if (prestamo == null) {
+            throw new IllegalArgumentException(
+            "El préstamo no puede ser nulo.");
+    }
+        listaPrestamos.add(prestamo);
+        guardarEnCSV();
     }
 
     private void cargarDesdeCSV() {
@@ -140,6 +143,31 @@ public class RepositorioPrestamoCSV implements Repositorio<Prestamo> {
             throw new UncheckedIOException(
                     "Error al leer prestamos.csv", e);
         }
+    }
+    
+    private void guardarEnCSV() {
+        try (java.io.BufferedWriter bw = java.nio.file.Files.newBufferedWriter(
+                java.nio.file.Paths.get(rutaArchivo),
+                java.nio.charset.StandardCharsets.UTF_8)) {
+            bw.write("codigoEquipo,cedulaUsuario,fechaPrestamo,fechaLimite,fechaDevolucion");
+            bw.newLine();
+            
+            for (Prestamo prestamo : listaPrestamos) {
+                bw.write(
+                        prestamo.getEquipo().getCodigo() + ","
+                                + prestamo.getUsuario().getCedula() + ","
+                                + prestamo.getFechaPrestamo() + ","
+                                + prestamo.getFechaLimite() + ","
+                                + (prestamo.getFechaDevolucion() == null
+                                        ? ""
+                            : prestamo.getFechaDevolucion())
+            );
+            bw.newLine();
+        }
+        } catch (java.io.IOException e) {
+            throw new java.io.UncheckedIOException(
+                "Error al guardar prestamos.csv", e);
+    }
     }
 }
 
