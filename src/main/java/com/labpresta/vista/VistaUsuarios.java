@@ -116,6 +116,14 @@ public class VistaUsuarios extends JFrame {
         txtBusqueda.setText("");
         //Se eliminó modeloTabla.setRowCount(0); evitando que se borre la lista de usuarios
     }
+    
+    public JTextField getCampoBusqueda() {
+        return txtBusqueda;
+    }
+
+    public void limpiarTabla() {
+        modeloTabla.setRowCount(0);
+    }
 
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
