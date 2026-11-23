@@ -1,0 +1,7 @@
+codigo,tipo,descripcion,estado
+LAP-01,LAPTOP,Laptop Dell 14 pulgadas,Prestado
+LAP-02,LAPTOP,Laptop HP 15 pulgadas,Disponible
+LAP-03,LAPTOP,Laptop Lenovo,En mantenimiento
+PRO-01,PROYECTOR,Proyector Epson,Disponible
+ARD-01,KIT_ARDUINO,Kit Arduino UNO completo,Disponible
+ARD-02,KIT_ARDUINO,Kit Arduino Mega,Prestado
