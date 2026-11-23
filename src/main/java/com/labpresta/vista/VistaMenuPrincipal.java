@@ -100,6 +100,13 @@ public class VistaMenuPrincipal extends JFrame {
     public JButton getBtnPrestamos() {
         return btnPrestamos;
     }
+    
+    // Devuelve 0 si elige Prestar, 1 si elige Devolver y -1 si cierra el cuadro.
+    public int elegirOperacionPrestamo() {
+        Object[] opciones = {"Prestar equipo", "Devolver equipo"};
+        return JOptionPane.showOptionDialog(this, "¿Qué desea hacer?", "Préstamos y devoluciones",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+    }
 
     public void avisar(String pantalla) {
         JOptionPane.showMessageDialog(this, "La pantalla de " + pantalla + " aún no está disponible.");

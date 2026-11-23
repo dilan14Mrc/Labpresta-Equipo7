@@ -1,34 +1,85 @@
 package com.labpresta.controlador;
 
 import com.labpresta.modelo.Equipo;
+import com.labpresta.modelo.Prestamo;
+import com.labpresta.modelo.Usuario;
 import com.labpresta.repositorio.Repositorio;
+import com.labpresta.vista.VistaDevolucion;
 import com.labpresta.vista.VistaEquipos;
 import com.labpresta.vista.VistaMenuPrincipal;
+import com.labpresta.vista.VistaPrestar;
+import com.labpresta.vista.VistaUsuarios;
+import javax.swing.JFrame;
 
 public class ControladorMenu {
 
     private final VistaMenuPrincipal vista;
     private final Repositorio<Equipo> repositorioEquipos;
-    private VistaEquipos ventanaEquipos;
+    private final Repositorio<Usuario> repositorioUsuarios;
+    private final Repositorio<Prestamo> repositorioPrestamos;
 
-    public ControladorMenu(VistaMenuPrincipal vista, Repositorio<Equipo> repositorioEquipos) {
+    private JFrame ventanaEquipos;
+    private JFrame ventanaUsuarios;
+    private JFrame ventanaPrestar;
+    private JFrame ventanaDevolucion;
+
+    public ControladorMenu(VistaMenuPrincipal vista,
+                           Repositorio<Equipo> repositorioEquipos,
+                           Repositorio<Usuario> repositorioUsuarios,
+                           Repositorio<Prestamo> repositorioPrestamos) {
         this.vista = vista;
         this.repositorioEquipos = repositorioEquipos;
+        this.repositorioUsuarios = repositorioUsuarios;
+        this.repositorioPrestamos = repositorioPrestamos;
 
         vista.getBtnEquipos().addActionListener(e -> abrirEquipos());
-        // Estos dos se conectan cuando estén listas sus pantallas.
-        vista.getBtnUsuarios().addActionListener(e -> vista.avisar("Usuarios"));
-        vista.getBtnPrestamos().addActionListener(e -> vista.avisar("Préstamos y devoluciones"));
+        vista.getBtnUsuarios().addActionListener(e -> abrirUsuarios());
+        vista.getBtnPrestamos().addActionListener(e -> abrirPrestamos());
     }
 
-    // Abre la ventana de equipos. Si ya está abierta, solo la trae al frente
-    // para no tener dos ventanas con datos distintos.
+    // Cada vez que se abre una pantalla se crea nueva, así siempre muestra
+    // los datos más recientes (por ejemplo, el estado de los equipos).
     private void abrirEquipos() {
-        if (ventanaEquipos == null || !ventanaEquipos.isDisplayable()) {
-            ventanaEquipos = new VistaEquipos();
-            new ControladorEquipos(ventanaEquipos, repositorioEquipos);
+        cerrar(ventanaEquipos);
+        VistaEquipos v = new VistaEquipos();
+        new ControladorEquipos(v, repositorioEquipos);
+        mostrar(v);
+        ventanaEquipos = v;
+    }
+
+    private void abrirUsuarios() {
+        cerrar(ventanaUsuarios);
+        VistaUsuarios v = new VistaUsuarios();
+        new ControladorUsuarios(repositorioUsuarios, new ValidadorUsuario()).conectar(v);
+        mostrar(v);
+        ventanaUsuarios = v;
+    }
+
+    private void abrirPrestamos() {
+        int opcion = vista.elegirOperacionPrestamo();
+        if (opcion == 0) {
+            cerrar(ventanaPrestar);
+            VistaPrestar v = new VistaPrestar();
+            new ControladorPrestamos(v, repositorioEquipos, repositorioUsuarios, repositorioPrestamos);
+            mostrar(v);
+            ventanaPrestar = v;
+        } else if (opcion == 1) {
+            cerrar(ventanaDevolucion);
+            VistaDevolucion v = new VistaDevolucion();
+            new ControladorDevolucion(v, repositorioEquipos, repositorioPrestamos);
+            mostrar(v);
+            ventanaDevolucion = v;
         }
-        ventanaEquipos.setVisible(true);
-        ventanaEquipos.toFront();
+    }
+
+    private void cerrar(JFrame ventana) {
+        if (ventana != null) {
+            ventana.dispose();
+        }
+    }
+
+    private void mostrar(JFrame ventana) {
+        ventana.setVisible(true);
+        ventana.toFront();
     }
 }
