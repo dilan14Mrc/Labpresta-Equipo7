@@ -57,7 +57,11 @@ public class RepositorioPrestamoCSV implements Repositorio<Prestamo> {
             throw new IllegalArgumentException(
             "El préstamo no puede ser nulo.");
     }
-        listaPrestamos.add(prestamo);
+        // Si el préstamo ya está en la lista (por ejemplo, al devolverlo),
+        // solo se reescribe el archivo para no duplicarlo.
+        if (!listaPrestamos.contains(prestamo)) {
+            listaPrestamos.add(prestamo);
+        }
         guardarEnCSV();
     }
 
