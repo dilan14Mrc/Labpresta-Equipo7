@@ -136,7 +136,7 @@ public class VistaMenuPrincipal extends JFrame {
         tarjetas.add(new Tarjeta("Prestados", numPrestados, new Color(235, 130, 40), "prestados"));
         tarjetas.add(new Tarjeta("En mantenimiento", numMantenimiento, new Color(150, 110, 200), "mantenimiento"));
         tarjetas.add(new Tarjeta("Usuarios registrados", numUsuarios, new Color(30, 150, 190), "usuarios"));
-        tarjetas.add(new Tarjeta("Préstamos activos", numActivos, new Color(215, 80, 90), "activos"));
+        tarjetas.add(new Tarjeta("Préstamos vencidos", numActivos, new Color(215, 80, 90), "activos"));
 
         JLabel ayuda = new JLabel("Use el menú de la izquierda para registrar equipos y usuarios, y para prestar o devolver equipos.");
         ayuda.setFont(new Font(FUENTE, Font.PLAIN, 15));
@@ -186,13 +186,14 @@ public class VistaMenuPrincipal extends JFrame {
         numActivos.setText(String.valueOf(prestamosActivos));
     }
 
-    // Devuelve 0 si elige Prestar, 1 si elige Devolver y -1 si cierra el cuadro.
+    // Devuelve 0 Prestar, 1 Devolver, 2 Seguimiento y -1 si cierra el cuadro.
     public int elegirOperacionPrestamo() {
         final int[] eleccion = {-1};
         JDialog dialogo = new JDialog(this, "Préstamos y devoluciones", true);
         JButton btnPrestar = Estilo.botonPrimario("Prestar equipo");
         JButton btnDevolver = Estilo.botonPrimario("Devolver equipo");
         JButton btnCancelar = Estilo.botonSecundario("Cancelar");
+        JButton btnSeguimiento = Estilo.botonPrimario("Ver seguimiento (vencidos y atrasos)");
 
         btnPrestar.addActionListener(e -> {
             eleccion[0] = 0;
@@ -202,13 +203,18 @@ public class VistaMenuPrincipal extends JFrame {
             eleccion[0] = 1;
             dialogo.dispose();
         });
+        btnSeguimiento.addActionListener(e -> {
+            eleccion[0] = 2;
+            dialogo.dispose();
+        });
         btnCancelar.addActionListener(e -> dialogo.dispose());
 
-        JPanel cuerpo = new JPanel(new GridLayout(3, 1, 0, 12));
+        JPanel cuerpo = new JPanel(new GridLayout(4, 1, 0, 12));
         cuerpo.setBackground(FONDO);
         cuerpo.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
         cuerpo.add(btnPrestar);
         cuerpo.add(btnDevolver);
+        cuerpo.add(btnSeguimiento);
         cuerpo.add(btnCancelar);
 
         dialogo.add(Estilo.encabezado("Préstamos", "¿Qué desea hacer?"), BorderLayout.NORTH);
@@ -380,11 +386,13 @@ public class VistaMenuPrincipal extends JFrame {
                     g2.drawLine(cx - 5, cy + 13, cx - 11, cy + 7);
                     break;
                 case "mantenimiento":
-                    g2.drawOval(cx - 6, cy - 6, 12, 12);
+                    g2.setStroke(new BasicStroke(4.5f));
+                    g2.drawOval(cx - 7, cy - 7, 14, 14);
+                    g2.setStroke(new BasicStroke(4f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
                     for (int i = 0; i < 8; i++) {
                         double a = Math.PI / 4 * i;
                         g2.drawLine(cx + (int) (9 * Math.cos(a)), cy + (int) (9 * Math.sin(a)),
-                                cx + (int) (13 * Math.cos(a)), cy + (int) (13 * Math.sin(a)));
+                                cx + (int) (14 * Math.cos(a)), cy + (int) (14 * Math.sin(a)));
                     }
                     break;
                 case "usuarios":

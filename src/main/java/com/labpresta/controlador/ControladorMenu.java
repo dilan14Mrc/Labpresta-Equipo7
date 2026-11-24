@@ -8,6 +8,7 @@ import com.labpresta.vista.VistaDevolucion;
 import com.labpresta.vista.VistaEquipos;
 import com.labpresta.vista.VistaMenuPrincipal;
 import com.labpresta.vista.VistaPrestar;
+import com.labpresta.vista.VistaSeguimiento;
 import com.labpresta.vista.VistaUsuarios;
 import javax.swing.JFrame;
 import java.awt.event.WindowAdapter;
@@ -24,6 +25,7 @@ public class ControladorMenu {
     private JFrame ventanaUsuarios;
     private JFrame ventanaPrestar;
     private JFrame ventanaDevolucion;
+    private JFrame ventanaSeguimiento;
 
     public ControladorMenu(VistaMenuPrincipal vista,
                            Repositorio<Equipo> repositorioEquipos,
@@ -64,7 +66,7 @@ public class ControladorMenu {
         }
         int activos = 0;
         for (Prestamo p : repositorioPrestamos.listar()) {
-            if (p.estaActivo()) {
+            if (p.estaVencido()) {
                 activos++;
             }
         }
@@ -104,6 +106,12 @@ public class ControladorMenu {
             new ControladorDevolucion(v, repositorioEquipos, repositorioPrestamos);
             mostrar(v);
             ventanaDevolucion = v;
+        } else if (opcion == 2) {
+            cerrar(ventanaSeguimiento);
+            VistaSeguimiento v = new VistaSeguimiento();
+            new ControladorSeguimiento(v, repositorioPrestamos);
+            mostrar(v);
+            ventanaSeguimiento = v;
         }
     }
 
