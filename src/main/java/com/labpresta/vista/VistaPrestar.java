@@ -108,9 +108,11 @@ public class VistaPrestar extends JFrame {
     }
 
     // Método para limpiar los combos cuando se registre un préstamo
-    public void limpiarCombos() {
+        public void limpiarCombos() {
         cbUsuario.removeAllItems();
         cbEquipo.removeAllItems();
+        cbUsuario.addItem("Seleccione usuario...");
+        cbEquipo.addItem("Seleccione equipo...");
     }
 
     // Método para mostrar mensajes (errores o éxitos)

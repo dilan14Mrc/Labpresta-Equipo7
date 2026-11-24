@@ -81,17 +81,16 @@ public class ControladorPrestamos {
 
 
     private void prestarDesdeVista() {
-        String usuarioElegido = (String) vista.getCbUsuario().getSelectedItem();
-        String equipoElegido = (String) vista.getCbEquipo().getSelectedItem();
-
-        if (usuarioElegido == null || equipoElegido == null) {
+        if (vista.getCbUsuario().getSelectedIndex() <= 0
+                || vista.getCbEquipo().getSelectedIndex() <= 0) {
             vista.mostrarMensaje("Debe elegir un usuario y un equipo.");
             return;
         }
-
+        String usuarioElegido = (String) vista.getCbUsuario().getSelectedItem();
+        String equipoElegido = (String) vista.getCbEquipo().getSelectedItem();
         String cedula = usuarioElegido.split(" - ")[0].trim();
         String codigo = equipoElegido.split(" - ")[0].trim();
-
+        
         try {
             Prestamo prestamo = prestar(cedula, codigo, fechaElegida());
             cargarCombos();
@@ -107,18 +106,19 @@ public class ControladorPrestamos {
     }
 
     private void actualizarFechaLimite() {
-        if (cargando) {
+        if (vista.getCbUsuario().getSelectedIndex() <= 0) {
+            vista.setFechaLimite("---");
             return;
         }
         String usuarioElegido = (String) vista.getCbUsuario().getSelectedItem();
         if (usuarioElegido == null) {
-            vista.setFechaLimite("");
+            vista.setFechaLimite("---");
             return;
         }
         LocalDate limite = calcularFechaLimite(usuarioElegido.split(" - ")[0].trim(), fechaElegida());
-        vista.setFechaLimite(limite == null ? "" : limite.format(FORMATO));
+        vista.setFechaLimite(limite == null ? "---" : limite.format(FORMATO));
     }
-
+    
     private void cargarCombos() {
         cargando = true;
         vista.limpiarCombos();

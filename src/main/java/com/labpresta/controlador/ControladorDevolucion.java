@@ -31,10 +31,10 @@ public class ControladorDevolucion {
 
         if (vista != null) {
             vista.getBtnDevolver().addActionListener(e -> devolverDesdeVista());
+            vista.getCbPrestamoActivo().addActionListener(e -> ajustarFechaMinima());
             cargarCombo();
         }
     }
-
 
     public List<Prestamo> listarActivos() {
         List<Prestamo> activos = new ArrayList<>();
@@ -58,9 +58,17 @@ public class ControladorDevolucion {
         repositorioPrestamos.guardar(prestamo);
     }
 
+    private void ajustarFechaMinima() {
+        int indice = vista.getCbPrestamoActivo().getSelectedIndex() - 1;
+        if (indice < 0 || indice >= activosMostrados.size()) {
+            vista.setFechaMinima(null);
+            return;
+        }
+        vista.setFechaMinima(activosMostrados.get(indice).getFechaPrestamo());
+    }
 
     private void devolverDesdeVista() {
-        int indice = vista.getCbPrestamoActivo().getSelectedIndex();
+        int indice = vista.getCbPrestamoActivo().getSelectedIndex() - 1;
         if (indice < 0 || indice >= activosMostrados.size()) {
             vista.mostrarMensaje("Debe elegir un préstamo activo.");
             return;

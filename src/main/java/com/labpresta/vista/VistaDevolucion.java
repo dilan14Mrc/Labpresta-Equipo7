@@ -3,6 +3,8 @@ package com.labpresta.vista;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -71,6 +73,20 @@ public class VistaDevolucion extends JFrame {
         return btnDevolver;
     }
 
+    // La devolución no puede ser antes del préstamo. Con null se quita el límite.
+    public void setFechaMinima(LocalDate minima) {
+        SpinnerDateModel modelo = (SpinnerDateModel) spFechaDevolucion.getModel();
+        if (minima == null) {
+            modelo.setStart(null);
+            return;
+        }
+        Date inicio = Date.from(minima.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        modelo.setStart(inicio);
+        if (getFechaDevolucion().before(inicio)) {
+            spFechaDevolucion.setValue(inicio);
+        }
+    }
+
     // Método para llenar el combo con los préstamos (ej: "LAP-01 - Juan Perez - 16/11/2026")
     public void agregarPrestamoCombo(String texto) {
         cbPrestamoActivo.addItem(texto);
@@ -79,6 +95,7 @@ public class VistaDevolucion extends JFrame {
     // Limpiar los combos
     public void limpiarCombo() {
         cbPrestamoActivo.removeAllItems();
+        cbPrestamoActivo.addItem("Seleccione préstamo...");
     }
 
     // Mostrar mensajes
