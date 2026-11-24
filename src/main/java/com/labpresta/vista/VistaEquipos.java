@@ -1,9 +1,10 @@
-
 package com.labpresta.vista;
 
 import com.labpresta.modelo.TipoEquipo;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -18,47 +19,54 @@ public class VistaEquipos extends JFrame {
     private DefaultTableModel modeloTabla;
 
     public VistaEquipos() {
-
         setTitle("LabPresta - Registro de equipos");
-        setSize(650, 450);
+        setSize(1000, 580);
+        setMinimumSize(new Dimension(900, 520));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel del formulario
-        JPanel panelFormulario = new JPanel(
-                new GridLayout(5, 2, 10, 10));
-
-        panelFormulario.add(new JLabel("Código:"));
         txtCodigo = new JTextField();
-        panelFormulario.add(txtCodigo);
-
-        panelFormulario.add(new JLabel("Tipo de equipo:"));
+        Estilo.estilizarCampo(txtCodigo);
         cmbTipo = new JComboBox<>(TipoEquipo.values());
-        panelFormulario.add(cmbTipo);
-
-        panelFormulario.add(new JLabel("Descripción:"));
+        Estilo.estilizarCombo(cmbTipo);
         txtDescripcion = new JTextField();
-        panelFormulario.add(txtDescripcion);
+        Estilo.estilizarCampo(txtDescripcion);
+        btnRegistrar = Estilo.botonPrimario("Registrar equipo");
+        btnCambiarEstado = Estilo.botonPrimario("Cambiar estado");
 
-        btnRegistrar = new JButton("Registrar");
-        panelFormulario.add(new JLabel());
-        panelFormulario.add(btnRegistrar);
+        JPanel formulario = Estilo.tarjeta();
+        formulario.setLayout(new GridBagLayout());
+        Estilo.fila(formulario, 0, "Código", txtCodigo);
+        Estilo.fila(formulario, 1, "Tipo de equipo", cmbTipo);
+        Estilo.fila(formulario, 2, "Descripción", txtDescripcion);
+        Estilo.fila(formulario, 3, "", btnRegistrar);
+        Estilo.fila(formulario, 4, "", btnCambiarEstado);
 
-        // Botón para cambiar el estado del equipo
-        btnCambiarEstado = new JButton("Cambiar estado");
-        panelFormulario.add(new JLabel());
-        panelFormulario.add(btnCambiarEstado);
-
-        // Tabla de equipos
         modeloTabla = new DefaultTableModel(
-                new String[]{"Código", "Tipo", "Descripción", "Estado"}, 0
-        );
-
+                new String[]{"Código", "Tipo", "Descripción", "Estado"}, 0) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false;
+            }
+        };
         tablaEquipos = new JTable(modeloTabla);
+        Estilo.estilizarTabla(tablaEquipos);
+        JScrollPane scroll = new JScrollPane(tablaEquipos);
+        scroll.setBorder(BorderFactory.createLineBorder(Estilo.BORDE));
+        scroll.getViewport().setBackground(Color.WHITE);
 
-        // Organización de la ventana
-        add(panelFormulario, BorderLayout.NORTH);
-        add(new JScrollPane(tablaEquipos), BorderLayout.CENTER);
+        JPanel izquierda = new JPanel(new BorderLayout());
+        izquierda.setOpaque(false);
+        izquierda.add(formulario, BorderLayout.NORTH);
+
+        JPanel cuerpo = new JPanel(new BorderLayout(20, 0));
+        cuerpo.setBackground(Estilo.FONDO);
+        cuerpo.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
+        cuerpo.add(izquierda, BorderLayout.WEST);
+        cuerpo.add(scroll, BorderLayout.CENTER);
+
+        add(Estilo.encabezado("Equipos", "Registre los equipos y cambie su estado"), BorderLayout.NORTH);
+        add(cuerpo, BorderLayout.CENTER);
     }
 
     public String getCodigo() {

@@ -18,62 +18,72 @@ public class VistaUsuarios extends JFrame {
 
     public VistaUsuarios() {
         setTitle("Gestión de Usuarios - LabPresta");
-        setSize(750, 500);
+        setSize(1000, 600);
+        setMinimumSize(new Dimension(900, 540));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Para que solo cierre esta ventana
         initUI(); // Llama al método que arma la ventana
     }
 
     private void initUI() {
-        // Panel del Formulario 
-        JPanel panelFormulario = new JPanel(new GridLayout(5, 2, 10, 10));
-        panelFormulario.setBorder(BorderFactory.createTitledBorder("Registrar Nuevo Usuario"));
-
-        panelFormulario.add(new JLabel("Cédula:"));
         txtCedula = new JTextField();
-        panelFormulario.add(txtCedula);
-
-        panelFormulario.add(new JLabel("Nombre Completo:"));
+        Estilo.estilizarCampo(txtCedula);
         txtNombreCompleto = new JTextField();
-        panelFormulario.add(txtNombreCompleto);
-
-        panelFormulario.add(new JLabel("Tipo de Usuario:"));
-        cbTipo = new JComboBox<>(new String[]{"", "Estudiante", "Docente"}); // Opciones
-        panelFormulario.add(cbTipo);
-
-        panelFormulario.add(new JLabel("Teléfono:"));
+        Estilo.estilizarCampo(txtNombreCompleto);
+        cbTipo = new JComboBox<>(new String[]{"", "Estudiante", "Docente"});
+        Estilo.estilizarCombo(cbTipo);
         txtTelefono = new JTextField();
-        panelFormulario.add(txtTelefono);
+        Estilo.estilizarCampo(txtTelefono);
+        btnRegistrar = Estilo.botonPrimario("Registrar usuario");
 
-        panelFormulario.add(new JLabel("")); 
-        btnRegistrar = new JButton("Registrar Usuario");
-        panelFormulario.add(btnRegistrar);
+        JPanel formulario = Estilo.tarjeta();
+        formulario.setLayout(new GridBagLayout());
+        Estilo.fila(formulario, 0, "Cédula", txtCedula);
+        Estilo.fila(formulario, 1, "Nombre completo", txtNombreCompleto);
+        Estilo.fila(formulario, 2, "Tipo de usuario", cbTipo);
+        Estilo.fila(formulario, 3, "Teléfono", txtTelefono);
+        Estilo.fila(formulario, 4, "", btnRegistrar);
 
-        // Panel de Búsqueda y Tabla 
-        JPanel panelTabla = new JPanel(new BorderLayout(5, 5));
-        panelTabla.setBorder(BorderFactory.createTitledBorder("Lista de Usuarios"));
-        
-        // Caja de búsqueda
-        JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelBusqueda.add(new JLabel("Buscar (Cédula o Nombre):"));
-        txtBusqueda = new JTextField(25);
-        panelBusqueda.add(txtBusqueda);
-        panelTabla.add(panelBusqueda, BorderLayout.NORTH);
+        txtBusqueda = new JTextField();
+        Estilo.estilizarCampo(txtBusqueda);
+        txtBusqueda.setPreferredSize(new Dimension(300, 38));
 
-        // Tabla
+        JPanel panelBusqueda = new JPanel(new BorderLayout(12, 0));
+        panelBusqueda.setOpaque(false);
+        panelBusqueda.setBorder(BorderFactory.createEmptyBorder(0, 0, 12, 0));
+        panelBusqueda.add(Estilo.etiqueta("Buscar por cédula o nombre"), BorderLayout.WEST);
+        panelBusqueda.add(txtBusqueda, BorderLayout.CENTER);
+
         modeloTabla = new DefaultTableModel(new Object[]{"Cédula", "Nombre", "Tipo", "Teléfono"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; 
+                return false;
             }
         };
         tablaUsuarios = new JTable(modeloTabla);
-        panelTabla.add(new JScrollPane(tablaUsuarios), BorderLayout.CENTER);
+        Estilo.estilizarTabla(tablaUsuarios);
+        JScrollPane scroll = new JScrollPane(tablaUsuarios);
+        scroll.setBorder(BorderFactory.createLineBorder(Estilo.BORDE));
+        scroll.getViewport().setBackground(Color.WHITE);
 
-        // Agregar todo a la ventana 
-        setLayout(new BorderLayout(10, 10));
-        add(panelFormulario, BorderLayout.NORTH);
-        add(panelTabla, BorderLayout.CENTER);
+        JPanel derecha = new JPanel(new BorderLayout());
+        derecha.setOpaque(false);
+        derecha.add(panelBusqueda, BorderLayout.NORTH);
+        derecha.add(scroll, BorderLayout.CENTER);
+
+        JPanel izquierda = new JPanel(new BorderLayout());
+        izquierda.setOpaque(false);
+        izquierda.add(formulario, BorderLayout.NORTH);
+
+        JPanel cuerpo = new JPanel(new BorderLayout(20, 0));
+        cuerpo.setBackground(Estilo.FONDO);
+        cuerpo.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
+        cuerpo.add(izquierda, BorderLayout.WEST);
+        cuerpo.add(derecha, BorderLayout.CENTER);
+
+        setLayout(new BorderLayout());
+        add(Estilo.encabezado("Usuarios", "Registre y busque estudiantes y docentes"), BorderLayout.NORTH);
+        add(cuerpo, BorderLayout.CENTER);
     }
 
     
