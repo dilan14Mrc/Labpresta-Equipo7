@@ -131,16 +131,16 @@ public class VistaMenuPrincipal extends JFrame {
 
         JPanel tarjetas = new JPanel(new GridLayout(2, 3, 20, 20));
         tarjetas.setOpaque(false);
-        tarjetas.add(new Tarjeta("Equipos registrados", numEquipos, new Color(47, 84, 150)));
-        tarjetas.add(new Tarjeta("Disponibles", numDisponibles, new Color(46, 160, 100)));
-        tarjetas.add(new Tarjeta("Prestados", numPrestados, new Color(235, 130, 40)));
-        tarjetas.add(new Tarjeta("En mantenimiento", numMantenimiento, new Color(150, 110, 200)));
-        tarjetas.add(new Tarjeta("Usuarios registrados", numUsuarios, new Color(30, 150, 190)));
-        tarjetas.add(new Tarjeta("Préstamos activos", numActivos, new Color(215, 80, 90)));
+        tarjetas.add(new Tarjeta("Equipos registrados", numEquipos, new Color(47, 84, 150), "equipos"));
+        tarjetas.add(new Tarjeta("Disponibles", numDisponibles, new Color(46, 160, 100), "disponibles"));
+        tarjetas.add(new Tarjeta("Prestados", numPrestados, new Color(235, 130, 40), "prestados"));
+        tarjetas.add(new Tarjeta("En mantenimiento", numMantenimiento, new Color(150, 110, 200), "mantenimiento"));
+        tarjetas.add(new Tarjeta("Usuarios registrados", numUsuarios, new Color(30, 150, 190), "usuarios"));
+        tarjetas.add(new Tarjeta("Préstamos activos", numActivos, new Color(215, 80, 90), "activos"));
 
         JLabel ayuda = new JLabel("Use el menú de la izquierda para registrar equipos y usuarios, y para prestar o devolver equipos.");
-        ayuda.setFont(new Font(FUENTE, Font.PLAIN, 13));
-        ayuda.setForeground(GRIS);
+        ayuda.setFont(new Font(FUENTE, Font.PLAIN, 15));
+        ayuda.setForeground(new Color(70, 82, 110));
         ayuda.setBorder(BorderFactory.createEmptyBorder(22, 0, 0, 0));
 
         contenido.add(encabezado, BorderLayout.NORTH);
@@ -151,7 +151,7 @@ public class VistaMenuPrincipal extends JFrame {
 
     private static JLabel crearNumero() {
         JLabel l = new JLabel("0");
-        l.setFont(new Font(FUENTE, Font.BOLD, 40));
+        l.setFont(new Font(FUENTE, Font.BOLD, 48));
         l.setForeground(TEXTO);
         return l;
     }
@@ -311,20 +311,23 @@ public class VistaMenuPrincipal extends JFrame {
         }
     }
 
-    // Tarjeta blanca con esquinas redondeadas, franja de color y un número grande.
+    // Tarjeta blanca con franja de color, título legible, número grande e icono.
     private static class Tarjeta extends JPanel {
 
         private final Color acento;
+        private final String icono;
 
-        Tarjeta(String titulo, JLabel numero, Color acento) {
+        Tarjeta(String titulo, JLabel numero, Color acento, String icono) {
             this.acento = acento;
+            this.icono = icono;
             setOpaque(false);
             setLayout(new BorderLayout());
-            setBorder(BorderFactory.createEmptyBorder(18, 26, 18, 16));
+            setBorder(BorderFactory.createEmptyBorder(20, 28, 18, 16));
 
             JLabel etiqueta = new JLabel(titulo);
-            etiqueta.setFont(new Font(FUENTE, Font.PLAIN, 14));
-            etiqueta.setForeground(GRIS);
+            etiqueta.setFont(new Font(FUENTE, Font.BOLD, 16));
+            etiqueta.setForeground(new Color(60, 72, 100));
+            numero.setForeground(acento);
 
             add(etiqueta, BorderLayout.NORTH);
             add(numero, BorderLayout.CENTER);
@@ -345,7 +348,54 @@ public class VistaMenuPrincipal extends JFrame {
             g2.setClip(new java.awt.geom.RoundRectangle2D.Float(0, 0, w - 3, h - 4, 18, 18));
             g2.setColor(acento);
             g2.fillRect(0, 0, 7, h);
+            g2.setClip(null);
+
+            // círculo suave con el icono, abajo a la derecha
+            int cx = w - 3 - 16 - 28;
+            int cy = (h - 4) / 2 + 16;
+            g2.setColor(new Color(acento.getRed(), acento.getGreen(), acento.getBlue(), 35));
+            g2.fillOval(cx - 28, cy - 28, 56, 56);
+            g2.setColor(acento);
+            g2.setStroke(new BasicStroke(2.6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            dibujar(g2, cx, cy);
             g2.dispose();
+        }
+
+        private void dibujar(Graphics2D g2, int cx, int cy) {
+            switch (icono) {
+                case "equipos":
+                    g2.drawRoundRect(cx - 11, cy - 10, 22, 15, 3, 3);
+                    g2.drawLine(cx - 15, cy + 9, cx + 15, cy + 9);
+                    break;
+                case "disponibles":
+                    g2.drawLine(cx - 10, cy, cx - 3, cy + 7);
+                    g2.drawLine(cx - 3, cy + 7, cx + 10, cy - 8);
+                    break;
+                case "prestados":
+                    g2.drawLine(cx - 11, cy - 6, cx + 11, cy - 6);
+                    g2.drawLine(cx + 5, cy - 12, cx + 11, cy - 6);
+                    g2.drawLine(cx + 5, cy, cx + 11, cy - 6);
+                    g2.drawLine(cx - 11, cy + 7, cx + 11, cy + 7);
+                    g2.drawLine(cx - 5, cy + 1, cx - 11, cy + 7);
+                    g2.drawLine(cx - 5, cy + 13, cx - 11, cy + 7);
+                    break;
+                case "mantenimiento":
+                    g2.drawOval(cx - 6, cy - 6, 12, 12);
+                    for (int i = 0; i < 8; i++) {
+                        double a = Math.PI / 4 * i;
+                        g2.drawLine(cx + (int) (9 * Math.cos(a)), cy + (int) (9 * Math.sin(a)),
+                                cx + (int) (13 * Math.cos(a)), cy + (int) (13 * Math.sin(a)));
+                    }
+                    break;
+                case "usuarios":
+                    g2.drawOval(cx - 5, cy - 13, 10, 10);
+                    g2.drawArc(cx - 11, cy, 22, 20, 0, 180);
+                    break;
+                default:
+                    g2.drawOval(cx - 12, cy - 12, 24, 24);
+                    g2.drawLine(cx, cy, cx, cy - 8);
+                    g2.drawLine(cx, cy, cx + 6, cy + 3);
+            }
         }
     }
 }
