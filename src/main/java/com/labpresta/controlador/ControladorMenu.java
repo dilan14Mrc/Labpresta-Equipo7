@@ -10,6 +10,8 @@ import com.labpresta.vista.VistaMenuPrincipal;
 import com.labpresta.vista.VistaPrestar;
 import com.labpresta.vista.VistaUsuarios;
 import javax.swing.JFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ControladorMenu {
 
@@ -35,7 +37,41 @@ public class ControladorMenu {
         vista.getBtnEquipos().addActionListener(e -> abrirEquipos());
         vista.getBtnUsuarios().addActionListener(e -> abrirUsuarios());
         vista.getBtnPrestamos().addActionListener(e -> abrirPrestamos());
+        
+        // El panel se actualiza al abrir y cada vez que el menú vuelve a tener el foco.
+        actualizarResumen();
+        vista.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                actualizarResumen();
+            }
+        });
     }
+
+    private void actualizarResumen() {
+        int disponibles = 0;
+        int prestados = 0;
+        int mantenimiento = 0;
+        for (Equipo e : repositorioEquipos.listar()) {
+            String estado = e.getEstado().getNombre();
+            if ("Disponible".equals(estado)) {
+                disponibles++;
+            } else if ("Prestado".equals(estado)) {
+                prestados++;
+            } else {
+                mantenimiento++;
+            }
+        }
+        int activos = 0;
+        for (Prestamo p : repositorioPrestamos.listar()) {
+            if (p.estaActivo()) {
+                activos++;
+            }
+        }
+        vista.setResumen(repositorioEquipos.listar().size(), disponibles, prestados,
+                mantenimiento, repositorioUsuarios.listar().size(), activos);
+    }
+    
 
     // Cada vez que se abre una pantalla se crea nueva, así siempre muestra
     // los datos más recientes (por ejemplo, el estado de los equipos).
