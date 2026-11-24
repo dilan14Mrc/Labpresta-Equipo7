@@ -37,7 +37,7 @@ public class ControladorMenu {
         vista.getBtnEquipos().addActionListener(e -> abrirEquipos());
         vista.getBtnUsuarios().addActionListener(e -> abrirUsuarios());
         vista.getBtnPrestamos().addActionListener(e -> abrirPrestamos());
-        
+
         // El panel se actualiza al abrir y cada vez que el menú vuelve a tener el foco.
         actualizarResumen();
         vista.addWindowFocusListener(new WindowAdapter() {
@@ -71,7 +71,6 @@ public class ControladorMenu {
         vista.setResumen(repositorioEquipos.listar().size(), disponibles, prestados,
                 mantenimiento, repositorioUsuarios.listar().size(), activos);
     }
-    
 
     // Cada vez que se abre una pantalla se crea nueva, así siempre muestra
     // los datos más recientes (por ejemplo, el estado de los equipos).
@@ -115,6 +114,12 @@ public class ControladorMenu {
     }
 
     private void mostrar(JFrame ventana) {
+        ventana.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                vista.toFront();
+            }
+        });
         ventana.setVisible(true);
         ventana.toFront();
     }

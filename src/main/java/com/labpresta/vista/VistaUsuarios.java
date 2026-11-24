@@ -82,36 +82,34 @@ public class VistaUsuarios extends JFrame {
         cuerpo.add(derecha, BorderLayout.CENTER);
 
         setLayout(new BorderLayout());
-        add(Estilo.encabezado("Usuarios", "Registre y busque estudiantes y docentes"), BorderLayout.NORTH);
+        add(Estilo.encabezado("Usuarios", "Registre y busque estudiantes y docentes", this), BorderLayout.NORTH);
         add(cuerpo, BorderLayout.CENTER);
     }
 
-    
-    // MÉTODOS DE ACCESO 
-    
+    // MÉTODOS DE ACCESO
 
-    public String getCedula() { 
-        return txtCedula.getText().trim(); 
+    public String getCedula() {
+        return txtCedula.getText().trim();
     }
-    
-    public String getNombreCompleto() { 
-        return txtNombreCompleto.getText().trim(); 
+
+    public String getNombreCompleto() {
+        return txtNombreCompleto.getText().trim();
     }
-    
-    public String getTipoSeleccionado() { 
-        return cbTipo.getSelectedItem().toString(); 
+
+    public String getTipoSeleccionado() {
+        return cbTipo.getSelectedItem().toString();
     }
-    
-    public String getTelefono() { 
-        return txtTelefono.getText().trim(); 
+
+    public String getTelefono() {
+        return txtTelefono.getText().trim();
     }
-    
-    public JButton getBtnRegistrar() { 
-        return btnRegistrar; 
+
+    public JButton getBtnRegistrar() {
+        return btnRegistrar;
     }
-    
-    public String getTxtBusqueda() { 
-        return txtBusqueda.getText().trim(); 
+
+    public String getTxtBusqueda() {
+        return txtBusqueda.getText().trim();
     }
 
     public void agregarFila(String cedula, String nombre, String tipo, String telefono) {
@@ -124,9 +122,9 @@ public class VistaUsuarios extends JFrame {
         cbTipo.setSelectedIndex(0);
         txtTelefono.setText("");
         txtBusqueda.setText("");
-        //Se eliminó modeloTabla.setRowCount(0); evitando que se borre la lista de usuarios
+        // Se eliminó modeloTabla.setRowCount(0); evitando que se borre la lista de usuarios
     }
-    
+
     public JTextField getCampoBusqueda() {
         return txtBusqueda;
     }
@@ -136,6 +134,6 @@ public class VistaUsuarios extends JFrame {
     }
 
     public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        Estilo.mensaje(this, mensaje);
     }
 }

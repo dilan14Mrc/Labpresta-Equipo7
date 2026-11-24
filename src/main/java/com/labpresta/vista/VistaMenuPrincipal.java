@@ -19,9 +19,9 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class VistaMenuPrincipal extends JFrame {
@@ -188,13 +188,40 @@ public class VistaMenuPrincipal extends JFrame {
 
     // Devuelve 0 si elige Prestar, 1 si elige Devolver y -1 si cierra el cuadro.
     public int elegirOperacionPrestamo() {
-        Object[] opciones = {"Prestar equipo", "Devolver equipo"};
-        return JOptionPane.showOptionDialog(this, "¿Qué desea hacer?", "Préstamos y devoluciones",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+        final int[] eleccion = {-1};
+        JDialog dialogo = new JDialog(this, "Préstamos y devoluciones", true);
+        JButton btnPrestar = Estilo.botonPrimario("Prestar equipo");
+        JButton btnDevolver = Estilo.botonPrimario("Devolver equipo");
+        JButton btnCancelar = Estilo.botonSecundario("Cancelar");
+
+        btnPrestar.addActionListener(e -> {
+            eleccion[0] = 0;
+            dialogo.dispose();
+        });
+        btnDevolver.addActionListener(e -> {
+            eleccion[0] = 1;
+            dialogo.dispose();
+        });
+        btnCancelar.addActionListener(e -> dialogo.dispose());
+
+        JPanel cuerpo = new JPanel(new GridLayout(3, 1, 0, 12));
+        cuerpo.setBackground(FONDO);
+        cuerpo.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
+        cuerpo.add(btnPrestar);
+        cuerpo.add(btnDevolver);
+        cuerpo.add(btnCancelar);
+
+        dialogo.add(Estilo.encabezado("Préstamos", "¿Qué desea hacer?"), BorderLayout.NORTH);
+        dialogo.add(cuerpo, BorderLayout.CENTER);
+        dialogo.setResizable(false);
+        dialogo.pack();
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setVisible(true);
+        return eleccion[0];
     }
 
     public void avisar(String pantalla) {
-        JOptionPane.showMessageDialog(this, "La pantalla de " + pantalla + " aún no está disponible.");
+        Estilo.mensaje(this, "La pantalla de " + pantalla + " aún no está disponible.");
     }
 
     // ---------- Componentes con diseño propio ----------

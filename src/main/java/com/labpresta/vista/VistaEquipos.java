@@ -30,7 +30,7 @@ public class VistaEquipos extends JFrame {
 
         txtCodigo = Estilo.campoConPista("Ej: LAP-01");
         Estilo.mayusculas(txtCodigo, 7);
-                cmbTipo = new JComboBox<>();
+        cmbTipo = new JComboBox<>();
         cmbTipo.addItem(null);
         for (TipoEquipo t : TipoEquipo.values()) {
             cmbTipo.addItem(t);
@@ -80,7 +80,7 @@ public class VistaEquipos extends JFrame {
         cuerpo.add(izquierda, BorderLayout.WEST);
         cuerpo.add(scroll, BorderLayout.CENTER);
 
-        add(Estilo.encabezado("Equipos", "Registre los equipos y cambie su estado"), BorderLayout.NORTH);
+        add(Estilo.encabezado("Equipos", "Registre los equipos y cambie su estado", this), BorderLayout.NORTH);
         add(cuerpo, BorderLayout.CENTER);
     }
 
@@ -106,44 +106,27 @@ public class VistaEquipos extends JFrame {
 
     // Obtener el código del equipo seleccionado
     public String getCodigoEquipoSeleccionado() {
-
         int fila = tablaEquipos.getSelectedRow();
-
         if (fila == -1) {
             return null;
         }
-
         int filaModelo = tablaEquipos.convertRowIndexToModel(fila);
-
         return modeloTabla.getValueAt(filaModelo, 0).toString();
     }
 
     // Actualizar el estado en la tabla
-    public void actualizarEstadoEquipo(
-            String codigo, String nuevoEstado) {
-
+    public void actualizarEstadoEquipo(String codigo, String nuevoEstado) {
         for (int i = 0; i < modeloTabla.getRowCount(); i++) {
-
-            String codigoFila =
-                    modeloTabla.getValueAt(i, 0).toString();
-
+            String codigoFila = modeloTabla.getValueAt(i, 0).toString();
             if (codigoFila.equalsIgnoreCase(codigo)) {
-
                 modeloTabla.setValueAt(nuevoEstado, i, 3);
                 return;
             }
         }
     }
 
-    public void agregarFila(
-            String codigo,
-            TipoEquipo tipo,
-            String descripcion,
-            String estado) {
-
-        modeloTabla.addRow(
-                new Object[]{codigo, tipo, descripcion, estado}
-        );
+    public void agregarFila(String codigo, TipoEquipo tipo, String descripcion, String estado) {
+        modeloTabla.addRow(new Object[]{codigo, tipo, descripcion, estado});
     }
 
     public void limpiarCampos() {
@@ -153,6 +136,6 @@ public class VistaEquipos extends JFrame {
     }
 
     public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+        Estilo.mensaje(this, mensaje);
     }
 }

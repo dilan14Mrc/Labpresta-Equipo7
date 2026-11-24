@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
@@ -65,7 +64,7 @@ public class VistaPrestar extends JFrame {
         cuerpo.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
         cuerpo.add(formulario, BorderLayout.NORTH);
 
-        add(Estilo.encabezado("Registrar préstamo", "Elija el usuario, el equipo y la fecha"), BorderLayout.NORTH);
+        add(Estilo.encabezado("Registrar préstamo", "Elija el usuario, el equipo y la fecha", this), BorderLayout.NORTH);
         add(cuerpo, BorderLayout.CENTER);
     }
 
@@ -108,7 +107,7 @@ public class VistaPrestar extends JFrame {
     }
 
     // Método para limpiar los combos cuando se registre un préstamo
-        public void limpiarCombos() {
+    public void limpiarCombos() {
         cbUsuario.removeAllItems();
         cbEquipo.removeAllItems();
         cbUsuario.addItem("Seleccione usuario...");
@@ -117,6 +116,6 @@ public class VistaPrestar extends JFrame {
 
     // Método para mostrar mensajes (errores o éxitos)
     public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        Estilo.mensaje(this, mensaje);
     }
 }

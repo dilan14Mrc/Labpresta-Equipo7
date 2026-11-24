@@ -10,7 +10,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
@@ -54,7 +53,7 @@ public class VistaDevolucion extends JFrame {
         cuerpo.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
         cuerpo.add(formulario, BorderLayout.NORTH);
 
-        add(Estilo.encabezado("Registrar devolución", "Elija el préstamo que se devuelve y la fecha"), BorderLayout.NORTH);
+        add(Estilo.encabezado("Registrar devolución", "Elija el préstamo que se devuelve y la fecha", this), BorderLayout.NORTH);
         add(cuerpo, BorderLayout.CENTER);
     }
 
@@ -100,6 +99,6 @@ public class VistaDevolucion extends JFrame {
 
     // Mostrar mensajes
     public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        Estilo.mensaje(this, mensaje);
     }
 }
