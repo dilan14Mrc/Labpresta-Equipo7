@@ -25,9 +25,19 @@ public class ValidadorUsuario {
         if (telefono == null || telefono.trim().isEmpty()) {
             throw new IllegalArgumentException("El teléfono es obligatorio.");
         }
+                String ced = cedula.trim();
+        if (!ced.matches("\\d{10}")) {
+            throw new IllegalArgumentException("La cédula debe tener exactamente 10 dígitos numéricos.");
+        }
+        if (!nombreCompleto.trim().matches("\\p{L}+(\\s+\\p{L}+)+")) {
+            throw new IllegalArgumentException("Ingrese nombre y apellido (solo letras).");
+        }
+        if (!telefono.trim().matches("0\\d{9}")) {
+            throw new IllegalArgumentException("El teléfono debe tener 10 dígitos y empezar con 0 (ej: 0991234567).");
+        }
 
         // Verificar cédula repetida eliminando los espacios al inicio y al final
-        if (repositorio.buscar(cedula.trim()) != null) {
+        if (repositorio.buscar(ced) != null) { 
             throw new IllegalArgumentException("Ya existe un usuario con esa cédula.");
         }
 

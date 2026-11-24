@@ -26,14 +26,13 @@ public class VistaUsuarios extends JFrame {
     }
 
     private void initUI() {
-        txtCedula = new JTextField();
-        Estilo.estilizarCampo(txtCedula);
-        txtNombreCompleto = new JTextField();
-        Estilo.estilizarCampo(txtNombreCompleto);
-        cbTipo = new JComboBox<>(new String[]{"", "Estudiante", "Docente"});
+        txtCedula = Estilo.campoConPista("Ej: 1751906XXX");
+        Estilo.soloDigitos(txtCedula, 10);
+        txtNombreCompleto = Estilo.campoConPista("Ej: Juan Pérez");
+        txtTelefono = Estilo.campoConPista("Ej: 0991234567");
+        Estilo.soloDigitos(txtTelefono, 10);
+        cbTipo = new JComboBox<>(new String[]{"Seleccione tipo...", "Estudiante", "Docente"});
         Estilo.estilizarCombo(cbTipo);
-        txtTelefono = new JTextField();
-        Estilo.estilizarCampo(txtTelefono);
         btnRegistrar = Estilo.botonPrimario("Registrar usuario");
 
         JPanel formulario = Estilo.tarjeta();

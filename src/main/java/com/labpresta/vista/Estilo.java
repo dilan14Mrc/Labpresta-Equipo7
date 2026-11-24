@@ -21,6 +21,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 // Colores, fuentes y componentes compartidos por todas las pantallas.
 public final class Estilo {
@@ -75,6 +79,54 @@ public final class Estilo {
         campo.setPreferredSize(new Dimension(300, 38));
         campo.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(BORDE), BorderFactory.createEmptyBorder(4, 10, 4, 10)));
+    }
+    
+        // Campo de texto que muestra un ejemplo en gris mientras está vacío.
+    public static JTextField campoConPista(String pista) {
+        JTextField campo = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (getText().isEmpty()) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                    g2.setColor(new Color(160, 168, 185));
+                    g2.setFont(getFont());
+                    Insets in = getInsets();
+                    int y = (getHeight() + g2.getFontMetrics().getAscent()
+                            - g2.getFontMetrics().getDescent()) / 2;
+                    g2.drawString(pista, in.left, y);
+                    g2.dispose();
+                }
+            }
+        };
+        estilizarCampo(campo);
+        return campo;
+    }
+
+    // Solo deja escribir dígitos, hasta un máximo de caracteres.
+    public static void soloDigitos(JTextField campo, int maximo) {
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String texto, AttributeSet a)
+                    throws BadLocationException {
+                replace(fb, offset, 0, texto, a);
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int largo, String texto, AttributeSet a)
+                    throws BadLocationException {
+                if (texto == null) {
+                    texto = "";
+                }
+                String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
+                String nuevo = actual.substring(0, offset) + texto + actual.substring(offset + largo);
+                if (nuevo.matches("\\d*") && nuevo.length() <= maximo) {
+                    super.replace(fb, offset, largo, texto, a);
+                }
+            }
+        });
     }
 
     public static void estilizarSpinner(JSpinner spinner) {
