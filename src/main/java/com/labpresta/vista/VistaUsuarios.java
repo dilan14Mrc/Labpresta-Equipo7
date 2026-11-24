@@ -29,6 +29,7 @@ public class VistaUsuarios extends JFrame {
         txtCedula = Estilo.campoConPista("Ej: 1751906XXX");
         Estilo.soloDigitos(txtCedula, 10);
         txtNombreCompleto = Estilo.campoConPista("Ej: Juan Pérez");
+        Estilo.soloLetras(txtNombreCompleto);
         txtTelefono = Estilo.campoConPista("Ej: 0991234567");
         Estilo.soloDigitos(txtTelefono, 10);
         cbTipo = new JComboBox<>(new String[]{"Seleccione tipo...", "Estudiante", "Docente"});

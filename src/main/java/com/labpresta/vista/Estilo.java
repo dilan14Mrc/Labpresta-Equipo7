@@ -128,6 +128,54 @@ public final class Estilo {
             }
         });
     }
+    
+    // Solo deja escribir letras y espacios (bloquea números y símbolos).
+    public static void soloLetras(JTextField campo) {
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String texto, AttributeSet a)
+                    throws BadLocationException {
+                replace(fb, offset, 0, texto, a);
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int largo, String texto, AttributeSet a)
+                    throws BadLocationException {
+                if (texto == null) {
+                    texto = "";
+                }
+                String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
+                String nuevo = actual.substring(0, offset) + texto + actual.substring(offset + largo);
+                if (nuevo.matches("[\\p{L}\\s]*")) {
+                    super.replace(fb, offset, largo, texto, a);
+                }
+            }
+        });
+    }
+    
+        // Convierte a mayúsculas lo que se escribe, hasta un máximo de caracteres.
+    public static void mayusculas(JTextField campo, int maximo) {
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String texto, AttributeSet a)
+                    throws BadLocationException {
+                replace(fb, offset, 0, texto, a);
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int largo, String texto, AttributeSet a)
+                    throws BadLocationException {
+                if (texto == null) {
+                    texto = "";
+                }
+                String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
+                String nuevo = actual.substring(0, offset) + texto + actual.substring(offset + largo);
+                if (nuevo.length() <= maximo) {
+                    super.replace(fb, offset, largo, texto.toUpperCase(), a);
+                }
+            }
+        });
+    }
 
     public static void estilizarSpinner(JSpinner spinner) {
         spinner.setFont(new Font(FUENTE, Font.PLAIN, 14));

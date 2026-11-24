@@ -30,7 +30,7 @@ public class ValidadorUsuario {
             throw new IllegalArgumentException("La cédula debe tener exactamente 10 dígitos numéricos.");
         }
         if (!nombreCompleto.trim().matches("\\p{L}+(\\s+\\p{L}+)+")) {
-            throw new IllegalArgumentException("Ingrese nombre y apellido (solo letras).");
+            throw new IllegalArgumentException("Ingrese nombre y apellido.");
         }
         if (!telefono.trim().matches("0\\d{9}")) {
             throw new IllegalArgumentException("El teléfono debe tener 10 dígitos y empezar con 0 (ej: 0991234567).");

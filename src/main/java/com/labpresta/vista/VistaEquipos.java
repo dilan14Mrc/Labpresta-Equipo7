@@ -7,6 +7,9 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
 public class VistaEquipos extends JFrame {
 
@@ -25,9 +28,21 @@ public class VistaEquipos extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        txtCodigo = new JTextField();
-        Estilo.estilizarCampo(txtCodigo);
-        cmbTipo = new JComboBox<>(TipoEquipo.values());
+        txtCodigo = Estilo.campoConPista("Ej: LAP-01");
+        Estilo.mayusculas(txtCodigo, 7);
+                cmbTipo = new JComboBox<>();
+        cmbTipo.addItem(null);
+        for (TipoEquipo t : TipoEquipo.values()) {
+            cmbTipo.addItem(t);
+        }
+        cmbTipo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> lista, Object valor,
+                                                          int indice, boolean seleccionado, boolean foco) {
+                return super.getListCellRendererComponent(lista,
+                        valor == null ? "Seleccione tipo..." : valor, indice, seleccionado, foco);
+            }
+        });
         Estilo.estilizarCombo(cmbTipo);
         txtDescripcion = new JTextField();
         Estilo.estilizarCampo(txtDescripcion);
@@ -70,7 +85,7 @@ public class VistaEquipos extends JFrame {
     }
 
     public String getCodigo() {
-        return txtCodigo.getText().trim();
+        return txtCodigo.getText().trim().toUpperCase();
     }
 
     public TipoEquipo getTipoSeleccionado() {

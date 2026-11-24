@@ -23,8 +23,14 @@ public class ValidadorEquipo {
         if (tipo == null) {
             throw new IllegalArgumentException("Debe seleccionar un tipo de equipo.");
         }
+        
+        String cod = codigo.trim().toUpperCase();
+        if (!cod.matches("[A-Z]{3}-\\d{2,3}")) {
+            throw new IllegalArgumentException(
+                    "El código debe tener el formato LAP-01 (3 letras, guion y 2 o 3 números).");
+        }
 
-        if (repositorio.buscar(codigo.trim()) != null) {
+        if (repositorio.buscar(cod) != null) {
             throw new IllegalArgumentException("Ya existe un equipo con ese codigo.");
         }
 
