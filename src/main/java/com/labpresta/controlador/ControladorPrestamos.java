@@ -35,6 +35,7 @@ public class ControladorPrestamos {
         if (vista != null) {
             vista.getBtnPrestar().addActionListener(e -> prestarDesdeVista());
             vista.getCbUsuario().addActionListener(e -> actualizarFechaLimite());
+            vista.agregarListenerFecha(e -> actualizarFechaLimite());
             cargarCombos();
         }
     }

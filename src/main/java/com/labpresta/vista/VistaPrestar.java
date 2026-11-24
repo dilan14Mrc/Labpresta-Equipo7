@@ -1,8 +1,19 @@
 package com.labpresta.vista;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.util.Date;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
+import javax.swing.event.ChangeListener;
 
 public class VistaPrestar extends JFrame {
 
@@ -14,55 +25,51 @@ public class VistaPrestar extends JFrame {
     private JButton btnPrestar;
 
     public VistaPrestar() {
-        setTitle("Registrar Préstamo - LabPresta");
-        setSize(450, 350);
+        setTitle("Registrar préstamo - LabPresta");
+        setSize(480, 600);
+        setMinimumSize(new Dimension(440, 580));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initUI();
     }
 
     private void initUI() {
-        // Panel principal con formulario
-        JPanel panel = new JPanel(new GridLayout(6, 2, 10, 15));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        // Usuario
-        panel.add(new JLabel("Seleccionar Usuario:"));
         cbUsuario = new JComboBox<>();
-        panel.add(cbUsuario);
+        Estilo.estilizarCombo(cbUsuario);
 
-        // Equipo
-        panel.add(new JLabel("Seleccionar Equipo Disponible:"));
         cbEquipo = new JComboBox<>();
-        panel.add(cbEquipo);
+        Estilo.estilizarCombo(cbEquipo);
 
-        // Fecha de préstamo (JSpinner con formato de fecha)
-        panel.add(new JLabel("Fecha de Préstamo:"));
+        // Fecha de préstamo: por defecto hoy, y se puede cambiar.
         spFechaPrestamo = new JSpinner(new SpinnerDateModel());
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(spFechaPrestamo, "dd/MM/yyyy");
-        spFechaPrestamo.setEditor(editor);
-        spFechaPrestamo.setValue(new Date()); // Por defecto, hoy
-        panel.add(spFechaPrestamo);
+        spFechaPrestamo.setEditor(new JSpinner.DateEditor(spFechaPrestamo, "dd/MM/yyyy"));
+        spFechaPrestamo.setValue(new Date());
+        Estilo.estilizarSpinner(spFechaPrestamo);
 
-        // Fecha límite (Solo lectura, calculada por el Strategy de Justin)
-        panel.add(new JLabel("Fecha Límite Calculada:"));
+        // Fecha límite: solo lectura, se calcula según el tipo de usuario.
         lblFechaLimite = new JLabel("---");
-        lblFechaLimite.setFont(new Font("Arial", Font.BOLD, 14));
-        lblFechaLimite.setForeground(Color.BLUE);
-        panel.add(lblFechaLimite);
+        Estilo.estilizarDato(lblFechaLimite);
 
-        // Espacio y Botón
-        panel.add(new JLabel("")); // Espacio vacío
-        btnPrestar = new JButton("Registrar Préstamo");
-        btnPrestar.setFont(new Font("Arial", Font.BOLD, 14));
-        panel.add(btnPrestar);
+        btnPrestar = Estilo.botonPrimario("Registrar préstamo");
 
-        add(panel, BorderLayout.CENTER);
+        JPanel formulario = Estilo.tarjeta();
+        formulario.setLayout(new GridBagLayout());
+        Estilo.fila(formulario, 0, "Usuario", cbUsuario);
+        Estilo.fila(formulario, 1, "Equipo (se muestra su estado)", cbEquipo);
+        Estilo.fila(formulario, 2, "Fecha de préstamo", spFechaPrestamo);
+        Estilo.fila(formulario, 3, "Fecha límite de devolución", lblFechaLimite);
+        Estilo.fila(formulario, 4, "", btnPrestar);
+
+        JPanel cuerpo = new JPanel(new BorderLayout());
+        cuerpo.setBackground(Estilo.FONDO);
+        cuerpo.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
+        cuerpo.add(formulario, BorderLayout.NORTH);
+
+        add(Estilo.encabezado("Registrar préstamo", "Elija el usuario, el equipo y la fecha"), BorderLayout.NORTH);
+        add(cuerpo, BorderLayout.CENTER);
     }
 
-   
-    // MÉTODOS DE ACCESO 
-
+    // MÉTODOS DE ACCESO
 
     public JComboBox<String> getCbUsuario() {
         return cbUsuario;
@@ -80,7 +87,12 @@ public class VistaPrestar extends JFrame {
         return btnPrestar;
     }
 
-    // Método para que el controlador actualice la etiqueta azul
+    // Para que el controlador recalcule la fecha límite al cambiar la fecha.
+    public void agregarListenerFecha(ChangeListener listener) {
+        spFechaPrestamo.addChangeListener(listener);
+    }
+
+    // Método para que el controlador actualice la fecha límite
     public void setFechaLimite(String fecha) {
         lblFechaLimite.setText(fecha);
     }
@@ -90,7 +102,7 @@ public class VistaPrestar extends JFrame {
         cbUsuario.addItem(texto);
     }
 
-    // Método para llenar el combo de equipos (formato: "Código - Descripción")
+    // Método para llenar el combo de equipos (formato: "Código - Descripción (Estado)")
     public void agregarEquipoCombo(String texto) {
         cbEquipo.addItem(texto);
     }
